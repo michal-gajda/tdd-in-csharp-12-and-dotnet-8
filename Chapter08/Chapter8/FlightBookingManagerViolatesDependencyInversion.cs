@@ -1,0 +1,22 @@
+﻿namespace Packt.CloudySkiesAir.Chapter8;
+
+public class FlightBookingManagerViolatesDependencyInversion {
+  private readonly SpecificMailClient _email;
+  public FlightBookingManagerViolatesDependencyInversion(string connectionString) {
+    _email = new SpecificMailClient(connectionString);
+  }
+
+  public bool BookFlight(Passenger passenger,
+    PassengerFlightInfo flight, string seat) {
+    if (!flight.IsSeatAvailable(seat)) {
+      return false;
+    }
+
+    flight.AssignSeat(passenger, seat);
+
+    string message = "Twoje miejsce jest potwierdzone";
+    _email.SendMessage(passenger.Email, message);
+
+    return true;
+  }
+}
